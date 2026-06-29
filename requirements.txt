@@ -26,6 +26,8 @@ beautifulsoup4==4.12.3
 # Env
 python-dotenv==1.0.1
 
-# Testing
+# Testing and dev tooling
 pytest==8.2.2
 pytest-asyncio==0.23.7
+ruff==0.4.9
+mypy==1.10.0

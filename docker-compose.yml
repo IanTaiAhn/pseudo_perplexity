@@ -1,1 +1,18 @@
-# App + ChromaDB + Prometheus + Grafana
+version: "3.9"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - chroma_data:/app/chroma_db
+    depends_on: []
+    restart: unless-stopped
+
+volumes:
+  chroma_data:

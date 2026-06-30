@@ -1,7 +1,7 @@
 import uuid
 from fastapi import APIRouter, HTTPException
 from api.schemas import QueryRequest, QueryResponse, Citation
-from retrieval.dense import retrieve
+from agents.orchestrator import retrieve
 from synthesis.generator import generate
 
 router = APIRouter()
@@ -17,12 +17,11 @@ _LOW_CONFIDENCE_RESPONSE = (
 async def query(request: QueryRequest) -> QueryResponse:
     query_id = str(uuid.uuid4())
 
-    chunks = retrieve(request.query, top_k=request.top_k * 2)  # over-fetch before cutoff
+    chunks = await retrieve(request)
 
-    # Trim to top_k
+    # Trim to top_k after merging doc + web results
     chunks = chunks[: request.top_k]
 
-    # Confidence gate: if best chunk score is too low, decline to answer
     if not chunks or (chunks[0].score is not None and chunks[0].score < _LOW_CONFIDENCE_THRESHOLD):
         return QueryResponse(
             answer=_LOW_CONFIDENCE_RESPONSE,

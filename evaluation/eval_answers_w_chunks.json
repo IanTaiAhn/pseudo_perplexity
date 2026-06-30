@@ -1,0 +1,85 @@
+{
+"query": "What does QRazor stand for and what problem does it solve?",
+    "answer": "QRazor stands for \"Reliable and Effortless 4-bit LLM Quantization\" and it solves the problem of quantizing large language models (LLMs) while preserving their performance and reducing computational costs.",
+    "grounded": "mostly",
+    "citations": [
+    {
+      "citation_number": 1,
+      "source": "qrazor_quantization.pdf",
+      "chunk_text": " throughput.\nN\no\nr\nm\nQR\nQ-Proj\nK-Proj\nV-proj\nQR\nQ·Kᵀ\nSoftmax\nS • V\nQR\nO-Proj\nN\no\nr\nm\nQR\nUp-Proj\nQR\nKV Cache\nQR\nQR\nGate-Proj\nDown-Proj\nQR\n: QRazor Quantization \n: INT4 Operation\n: FP16 Operation\n: Decoding Stage KV(INT4) Path\nMulti-Head Attention\nFeed-Forward Network\nDe-QR\nDe-QR\n: QRazor Dequantization \nσ\nQRazor\nσ\n: Activation Function FP16\nFigure 5. The QRazor quantization flow in attention and feed-forward network layers\n16\n",
+      "score": 0.38928742008345973
+    },
+    {
+      "citation_number": 2,
+      "source": "qrazor_quantization.pdf",
+      "chunk_text": "W4A8 g16\n79.33\n76.42\n45.14\n78.24\n71.74\n70.17\nW4A8 g32\nQRazor\n79.00\n76.07\n46.48\n78.07\n69.93\n69.91\nW4A8KV4 g16\n78.51\n76.67\n45.15\n77.92\n71.19\n69.88\nW4A8KV4 g32\n78.24\n76.84\n47.83\n77.54\n69.93\n70.07\nperformance across various models and configurations.\n5.3. Ablation Studies\nW4A8 evaluation. Although QRazor outperforms various\n4-bit quantization approaches in task performance, some\naccuracy degradation is inevitable due to the aggressive low-\nprecision representation. Therefore, we evalutate W4A8\nversion of QRazor by increasing the number of captured\nsalient bits to 8 per activation.\nTable 3 presents the accuracy results under the W4A8 preci-\n7\n\nQRazor: Reliable and Effortless 4-bit LLM Quantization by Significant Data Razoring\nTable 4. Zero-shot accuracy and effective bit-width comparison\nbetween different group sizes of W4A4KV4 configuration.\nGroup (g) Size\nModel\nBaseline\n8\n16\n32\n64\n128\nEffective Bits\n4.5\n4.25\n4.125\n4.06\n4.03\nAvg. Accuracy\nLLaMA-2-7B\n69.00\n64.58\n63.65\n61.17\n56.91\n47.36\nLLaMA-2-13B\n71.70\n69.18\n68.19\n67.07\n65.93\n63.76\nLLaMA-3-8B\n72.57\n70.43\n68.77\n67.58\n65.79\n60.44\nsion setting. The W4A8 configuration demonstrates signif-\nicantly higher accuracies across various tasks than W4A4.\nAt W4A8 precision, our QRazor consistently outperforms\nQLLM in most cases. Additionally, we further quantize\nKV caches to 4 bits, denoted as W4A8KV4, resulting",
+      "score": 0.3458827191413034
+    },
+    {
+      "citation_number": 3,
+      "source": "qrazor_quantization.pdf",
+      "chunk_text": " QLLM does not address the quantization\nof KV caches into a low-precision format, which repre-\n6\n\nQRazor: Reliable and Effortless 4-bit LLM Quantization by Significant Data Razoring\nTable 2. Zero-shot accuracy of LLaMA families and Mistral-7B on five common sense tasks.\nPerplexity ↓\nZero-shot Accuracy ↑\nModel\n#Bits\nEff. Bits\nMethod\nWikitext2\nPIQA\nARC-e\nARC-c\nHellaSwag\nWinogrande\nAvg\nLLaMA-2-7B\nFP16\n16\n-\n5.47\n79.13\n74.39\n45.97\n76.21\n69.30\n69.00\nW4A4\n4.03/4\nOS+\n-\n63.11\n39.10\n28.84\n47.31\n51.30\n45.93\nW4A4\n4\nOmniQuant\n14.61\n65.94\n43.94\n30.80\n53.53\n55.09\n49.86\nW4A4\n4\nQLLM\n11.75\n67.68\n44.40\n30.89\n58.45\n56.59\n51.60\nW4A4KV4\n4/4/4.125\nQuaRot(RTN)\n8.37\n72.09\n58.88\n35.24\n65.40\n60.69\n58.26\nW4A4KV4\nQuaRot(GPTQ)\n6.10\n76.77\n69.87\n40.87\n72.16\n63.77\n65.64\nW4A4 g16\n4.25\n6.45\n75.84\n72.63\n42.47\n72.96\n65.67\n65.91\nW4A4 g32\n4.125\nQRazor\n7.03\n73.67\n70.70\n39.46\n71.46\n64.09\n63.88\nW4A4KV4 g16\n4.25\n7.62\n73.39\n70.88\n39.80\n70.15\n64.01\n63.65\n",
+      "score": 0.31681167504754915
+    },
+    {
+      "citation_number": 4,
+      "source": "qrazor_quantization.pdf",
+      "chunk_text": "\n67.72\n68.23\nW4A4KV4 g32\n4.125\n5.79\n77.09\n74.91\n44.28\n75.06\n66.77\n67.62\nLLaMA-3-8B\nFP16\n16\n-\n6.14\n80.65\n80.18\n50.84\n79.18s\n73.01\n72.77\nW4A4KV4\n4/4/4.125\nQuaRot(RTN)\n-\n-\n-\n-\n-\n-\n-\nW4A4KV4\nQuaRot(GPTQ)\n8.16\n75.14\n68.01\n43.34\n72.94\n72.77\n65.18\nW4A4 g16\n4.25\n6.49\n78.42\n79.65\n46.82\n77.28\n71.90\n70.81\nW4A4 g32\n4.125\nQRazor\n7.05\n78.24\n77.89\n45.82\n76.93\n71.40\n70.06\nW4A4KV4 g16\n4.25\n7.57\n77.42\n77.19\n44.15\n75.81\n69.30\n68.77\nW4A4KV4 g32\n4.125\n8.26\n76.77\n75.51\n42.81\n74.05\n68.75\n67.58\nMistral-7B\nFP16\n16\n-\n5.42\n80.74\n81.58\n50.16\n61.25\n74.27\n69.60\nW4A4 g16\n4.25\n6.06\n77.75\n77.98\n45.48\n57.70\n69.77\n65.74\nW4A4 g32\n4.125\nQRazor\n6.24\n77.80\n75.39\n43.47\n56.20\n68.90\n64.35\nW4A4KV4 g16\n4.25\n6.18\n77.78\n77.34\n44.48\n58.09\n68.56\n65.25\nW4A4KV4 g",
+      "score": 0.31102755539942717
+    },
+    {
+      "citation_number": 5,
+      "source": "qrazor_quantization.pdf",
+      "chunk_text": "4A4.\nAt W4A8 precision, our QRazor consistently outperforms\nQLLM in most cases. Additionally, we further quantize\nKV caches to 4 bits, denoted as W4A8KV4, resulting in\nminimal accuracy loss. When comparing W4A8 to W4A4\nin Table 2, QRazor demonstrates less degradation in per-\nformance with reduced activation precision compared to\nQLLM. Notably, our SDR technique captures salient bits\nat the bit level, enabling finer data preservation than other\nmethods, which proves especially advantageous in more\naggressive compression settings.\nCompared to another SOTA method, QServe (Lin et al.,\n2024b), QRazor achieves nearly comparable accuracies.\nHowever, QServe employs complex rotation operations for\nquantizing activations, similar to Quarot, which introduces\nsignificant computational overhead. This highlights that\nQRazor is a more efficient technique than QServe, at the\nW4A8KV4 configuration.\nEffect of the SDR group size. A key feature of our ap-\nproach is the use of smaller group sizes compared to other\nmethods, as we can perform low-precision computations\nwithout the need for dequantization, thereby maintaining\nhardware performance. However, smaller group sizes do\nresult in an increased size of the cached flag data. Mean-\nwhile, other group-based quantization approaches require\nadditional data due to the scale factors generated for each\ngroup. For example, FP32 and FP16 scale factors add an\noverhead of 0.25 and 0.125 bits per value, respectively, when\nthe group size is 128. We evaluate QRazor under various\ngroup size settings to assess its efficiency.\nTable 4 presents the average accuracy of LLaMA models\nacross various tasks when QRazor is applied with different\ngroup sizes in W4A4KV4 configuration. As the group size\nincreases, capturing salient bits becomes more challenging\ndue to the larger number of data points sharing the same\nrazoring point. Consequently, significant accuracy degra-\ndation is observed in some tasks when tested with a group\nsize of 128, which shares four flag bits within the group,\nresulting in an effective bit-width of approximately 4.03\nbits per data. Based on the average accuracy drop, a group\nsize of 32 or smaller provides minimal accuracy loss across\nvarious",
+      "score": 0.29893073815547866
+    }
+  ],
+  "query_id": "46c3750b-dd22-4e64-89a7-5e9a3e8ec1fe",
+  "latency_ms": 142546.88,
+  "model_used": "models/qwen2.5",
+  "estimated_cost_usd": 0
+  
+}
+
+{
+"query": "What are the two stages of the QRazor quantization process?",
+  "answer": "The QRazor quantization process consists of two main stages: **quantization** and **compression**.",
+  "grounded": "partially",
+  "citations": [
+    {
+      "citation_number": 1,
+      "source": "qrazor_quantization.pdf",
+      "chunk_text": " throughput.\nN\no\nr\nm\nQR\nQ-Proj\nK-Proj\nV-proj\nQR\nQ·Kᵀ\nSoftmax\nS • V\nQR\nO-Proj\nN\no\nr\nm\nQR\nUp-Proj\nQR\nKV Cache\nQR\nQR\nGate-Proj\nDown-Proj\nQR\n: QRazor Quantization \n: INT4 Operation\n: FP16 Operation\n: Decoding Stage KV(INT4) Path\nMulti-Head Attention\nFeed-Forward Network\nDe-QR\nDe-QR\n: QRazor Dequantization \nσ\nQRazor\nσ\n: Activation Function FP16\nFigure 5. The QRazor quantization flow in attention and feed-forward network layers\n16\n",
+      "score": 0.43926157200845983
+    },
+    {
+      "citation_number": 2,
+      "source": "qrazor_quantization.pdf",
+      "chunk_text": " the tensor data\ninto multiple groups. After grouping, the data in each group\n(initially in FP16 precision) are directly quantized to 4-bit\nusing a single scale factor with FP16 precision. In contrast,\nour QRazor scheme quantizes the entire tensor data to 16-bit\nintegers during the quantization stage, with a single scale\nfactor shared across the entire tensor. Afterward, the quan-\ntized tensor is divided into multiple groups, and the 16-bit\ninteger data in each group are compressed to 4-bit using our\nSDR technique.\nIt is important to emphasize that in the quantization stage\nof our QRazor scheme, activations and KV-caches utilize\nper-tensor scaling, respectively, while weights employ per-\nchannel scaling. All parameters use static scaling at this\nstage. In contrast, Quarot, the SOTA method for quantizing\nall LLM parameters to 4-bit, similarly uses per-channel\nscaling for weights but adopts dynamic per-token scaling\nfor activations and per-group scaling for KV caches, with\na group size of 128, to enhance LLM accuracy in low-bit\nprecision scenarios (Ashkboos et al., 2024).\nUnlike weights, which are quantized offline, activations and\nKV caches must be quantized online using static scaling\nparameters. In this context, the scaling granularity of activa-\ntions and KV caches plays a critical role in determining the\ncomputational complexity of LLM inference. Our coarse\ngranularity scaling approach—per-tensor for activations and\nKV caches—reduces the computational complexity com-\npared to methods employing fine granularity scaling, such\nas per-token for activations and per-group for KV caches\nin Quarot (Xiao et al., 2024). This coarse granularity effec-\ntively offsets the relative overhead introduced by compres-\nsion, as discussed in the following subsections. Moreover,\ndespite the inherent limitations of coarse granularity, our\nQRazor scheme achieves accuracies that are either superior\nor comparable to Quarot, as discussed in Section 5.2.\n4.1. Quantization Stage: W8A16 or W8A16KV8\nIn the quantization stage, LLM parameters are converted\nfrom FP16 to two base precision scenarios, depending on\n3\n\nQR",
+      "score": 0.39237518249862136
+    },
+    {
+      "citation_number": 3,
+      "source": "qrazor_quantization.pdf",
+      "chunk_text": " 1 1 0 1 1 1 0\n0 0 0 0 0 0 0 1 0 0 0 1 1 1 0 0\nFigure 1. The overall concept of our QRazor scheme.\n3. Preliminaries\nAbsolute Max Scaling. The absolute max scaling (Latotzke\net al., 2022) ensures that input data fits within a target bit-\nwidth by utilizing the absolute maximum value of the data.\nThe quantization process begins by identifying the absolute\nmaximum value |Xmax| in the tensor, which is then used to\ncalculate the scale factor. For example, in the case of 8-bit\ninteger quantization, the formula to quantize a tensor X\nunder absolute max scaling and its dequantization formula\nare given by:\nXq = round( 127\n|Xmax| ·X),\nˆ\nX = |Xmax|\n127 ·Xq\nwhere Xq and ˆ\nX are the quantized and dequantized tensors,\nrespectively. This scaling guarantees that all values in the\ntensor are normalized within the 8-bit range, maximizing the\nprecision within the allowed bit-width. The absolute max\nscaling is applied to establish the base precision scenario\noutlined in Section 1, as it is known to be less sensitive to\noutliers compared to the min-max scaling method (Patro &\nSahu, 2015; de Amorim et al., 2023).\n4. The QRazor Scheme\nOur QRazor scheme consists of two stages: quantization\nand compression. In the quantization stage, we first quantize\nFP16 parameters to high-bit integers to accurately represent\nLLM parameters without any loss of accuracy, which we\nrefer to as the base precision scenario. It is important to note\nthat, at this stage, only the static quantization method (Xiao\net al., 2024) has been employed. Following this, the integers\nin the base precision format are compressed to lower-bit\ndata using our SDR technique.\nFigure 1 illustrates the concept of our QRazor scheme,\nspecifically detailing the process of quantizing activations\nto 4-bit. Most 4-bit PTQ schemes divide the tensor data\ninto multiple groups. After grouping, the data in each group\n(initially in FP16 precision) are directly quantized to 4-bit\nusing a single scale factor with FP16 precision. In contrast,\nour Q",
+      "score": 0.38229549171730914
+    },
+    {
+      "citation_number": 4,
+      "source": "qrazor_quantization.pdf",
+      "chunk_text": "arithmetic design. The design facilitates both memory- and\ncompute-efficient low-bit matrix multiplication, with hard-\nware details provided in Section 4.3. It is important to note\nthat the FP16 scaling process in QRazor is applied only dur-\ning the quantization stage, with granularities of per-tensor\nfor activations and KV cache while per-channel for weights.\nDue to the aggressive 4-bit compression, one might be con-\ncerned that the number of zeroed elements significantly\nincreases, degrading the reliability of our QRazor. Figure\n2(a), (b) demonstrates that the first concern is effectively\naddressed in our QRazor. It illustrates the portion of leading\n‘1’ positions before 4-bit compression (immediately after\nconverting to the sign-and-magnitude format). The lead-\ning ‘1’ positions for activations are predominantly located\nbetween the 8th and 12th bit orders. For instance, if the\nleading ‘1’ position in a group is the 13th bit, parameters\nwith an MSB below the 9th bit will be rounded and zeroed\nafter compression, as only 4 bits are retained. The empirical\nresults show that, the number of groups where the lead-\ning ‘1’ position exceeds the 12th-bit order is minimal (only\n9%), indicating that outliers are infrequent and mitigating\nconcerns about significant parameters being truncated after\n4-bit compression.\nIn Figure 2(c), we also analyzed the proportion of zeroed\nelements before and after 4-bit compression. For Query,\nKey, and Value, the increase in zeroed elements is not so\nconsiderable. However, for activations and weights, there\nis a notable increment. This is expected, as significant\nactivations and weights often have small absolute values\nclose to zero. Such truncation of small values does not lead\nto substantial errors. Combined with the low occurrence\n0.0E+00\n5.0E+06\n1.0E+07\n1.5E+07\n2.0E+07\n2.5E+07\n3th\n4th\n5th\n6th\n7th\n8th\n9th 10th 11th 12th 13th 14th 15th'\n# of Parameters\nLeading '1' Position\nActivation & Query\n(Base Precision: INT",
+      "score": 0.37222055687601463
+    },
+    {
+      "citation_number": 5,
+      "source": "qrazor_quantization.pdf",
+      "chunk_text": "1\n0\n1 1 1\n0 0 1\n0 1 0\n0 1 0\nFinal \nCompression\nResults\nFigure 4. SDR Encoding Scheme Consisting of Bitwise OR Operations for detecting the razoring point.\n13\n\nQRazor: Reliable and Effortless 4-bit LLM Quantization by Significant Data Razoring\nA.3. Perplexity\nWe evaluated the performance of our QRazor scheme using additional perplexity metric of Lambada-OpenAI dataset\n(Paperno et al., 2016) for W4A4, W4A8, W4A4KV4, and W4A8KV4 configurations on the LLaMA-2-7B and LLaMA-2-\n13B models. For calibration, 128 randomly selected samples from wikitext2 data has been used.\nTable 7. Perplexity of different group size with Lambada-OpenAI\nGroup Size Perplexity ↓\nModel\n#Bits\nMethod\nBaseline\n8\n16\n32\n64\n128\nLLaMA-2-7B\nW4A8\nQRazor\n3.40\n3.83\n4.01\n4.34\n4.52\n4.65\nW4A4\n4.24\n4.47\n5.04\n5.83\n7.94\nW4A8KV4\n4.14\n4.31\n4.63\n5.04\n6.11\nW4A4KV4\n4.29\n4.98\n5.91\n7.87\n19.23\nLLaMA-2-13B\nW4A8\nQRazor\n3.04\n3.36\n3.28\n3.34\n3.38\n3.39\nW4A4\n3.45\n3.64\n3.93\n4.58\n6.22\nW4A8KV4\n3.36\n3.45\n3.54\n3.63\n4.15\nW4A4KV4\n3.59\n3.79\n4.27\n5.09\n9.35\nA.4. FLOPs & OPs Comparison Results\nTo evaluate the computational efficiency of our proposed quantization scheme relative to the approach outlined in the\nQuaRot paper, we conducted a comparative analysis of the FLOPs",
+      "score": 0.36239199417899115
+    }
+  ],
+  "query_id": "b56b4f97-1a97-429b-8e11-03d098a51af1",
+  "latency_ms": 126790.58,
+  "model_used": "models/qwen2.5",
+  "estimated_cost_usd": 0
+}
+

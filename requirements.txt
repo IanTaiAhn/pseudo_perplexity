@@ -24,6 +24,9 @@ pymupdf==1.24.5
 # HTML parsing
 beautifulsoup4==4.12.3
 
+# Layer 2 — Web search (httpx already listed above)
+# Tavily is called via httpx directly — no extra SDK needed
+
 # Env
 python-dotenv==1.0.1
 

@@ -13,6 +13,7 @@ chromadb==0.5.3
 
 # LLM
 anthropic==0.28.0
+accelerate==1.14.0
 
 # Tokenization (for fixed-size chunking)
 tiktoken==0.7.0

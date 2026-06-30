@@ -3,7 +3,7 @@ import time
 import uuid
 import anthropic
 from api.schemas import Chunk, QueryResponse
-from synthesis.citation_tracker import build_context_block, filter_cited_chunks
+from synthesis.citation_tracker import build_context_block, filter_cited_chunks, extract_citations
 
 _LLM_MODEL = os.getenv("LLM_MODEL", "claude-sonnet-4-6")
 # When set, use a local HuggingFace model instead of Claude.
@@ -88,6 +88,8 @@ def generate(query: str, chunks: list[Chunk], query_id: str | None = None) -> Qu
 
     latency_ms = (time.time() - start) * 1000
     citations = filter_cited_chunks(answer, chunks)
+    if not citations:
+        citations = extract_citations(chunks)  # already imported in citation_tracker
 
     return QueryResponse(
         answer=answer,

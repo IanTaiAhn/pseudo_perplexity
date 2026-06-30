@@ -1,1 +1,106 @@
-[]
+[
+  {
+    "question": "What does QRazor stand for and what problem does it solve?",
+    "ground_truth_answer": "QRazor is a quantization scheme that enables reliable and effortless 4-bit quantization of weights, activations, and KV cache in transformer-based LLMs without requiring fine-tuning or additional training.",
+    "ground_truth_chunks": [
+      "QRazor: Reliable and Effortless 4-bit LLM Quantization by Significant Data Razoring"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "What are the two stages of the QRazor quantization process?",
+    "ground_truth_answer": "Stage one quantizes data using 8 or 16-bit integers as a basis with absolute max scaling to preserve accuracy close to full-precision models. Stage two compresses the quantized data to 4-bit using the Significant Data Razoring (SDR) technique, which retains only the four most salient bits.",
+    "ground_truth_chunks": [
+      "QRazor operates in two stages: first, quantizing data using 8 or 16-bit integers as a basis with absolute max scaling, and second, compressing the quantized data to 4-bit using significant data razoring"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "What bit-width does QRazor use for weights and activations as intermediate representations before compression?",
+    "ground_truth_answer": "QRazor employs 8-bit integers for weights and KV cache values, and 16-bit integers for activations.",
+    "ground_truth_chunks": [
+      "QRazor employs 8-bit integers for weights and KV cache values, combined with 16-bit integers for activations"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "What C4 perplexity does QRazor achieve on LLaMA2-7B under W4A4 quantization, and how does it compare to OmniQuant?",
+    "ground_truth_answer": "QRazor achieves a C4 perplexity of 15.76 on LLaMA2-7B under W4A4 quantization, which is 2.26 lower than OmniQuant's 18.02.",
+    "ground_truth_chunks": [
+      "QRazor attains a C4 perplexity of 15.76 (2.26 lower vs 18.02 in OmniQuant) on the LLaMA2-7B model of W4A4 quantization"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "By how many points does QRazor surpass SmoothQuant and QLLM in zero-shot reasoning accuracy on LLaMA2-7B?",
+    "ground_truth_answer": "QRazor surpasses SmoothQuant and QLLM by over 12 points in zero-shot reasoning task accuracy on the LLaMA2-7B model.",
+    "ground_truth_chunks": [
+      "surpassing Smoothquant and QLLM by over 12 points in zero-shot reasoning task accuracy on the LLaMA2-7B model"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "What four zero-shot reasoning benchmarks are used to evaluate QRazor?",
+    "ground_truth_answer": "QRazor is evaluated on PIQA, ARC, Hellaswag, and Winogrande benchmarks.",
+    "ground_truth_chunks": [
+      "accuracy tested on PIQA, ARC, Hellaswag, and Winogrande benchmarks"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "What dataset and how many samples are used for calibration in QRazor?",
+    "ground_truth_answer": "QRazor uses 128 randomly selected samples from Wikitext2 for calibration.",
+    "ground_truth_chunks": [
+      "calibration and validation were performed using 128 randomly selected samples from Wikitext2"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "What quantization configurations does QRazor support for weights, activations, and KV cache?",
+    "ground_truth_answer": "QRazor supports W4A4, W4A8, W4A4KV4, and W4A8KV4 configurations, where W denotes weights, A denotes activations, and KV denotes the key-value cache.",
+    "ground_truth_chunks": [
+      "W4A4, W4A8, W4A4KV4, and W4A8KV4 configurations"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "analytical"
+  },
+  {
+    "question": "What group sizes does QRazor recommend for reliable accuracy in W4A4 and W4A4KV4 configurations?",
+    "ground_truth_answer": "Group sizes of 16 and 32 exhibit reliable accuracy across all cases in W4A4 and W4A4KV4 configurations.",
+    "ground_truth_chunks": [
+      "In W4A4 and W4A4KV4 configurations, group sizes of 16 and 32 exhibit reliable accuracy across all cases"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "Does QRazor require fine-tuning or retraining the model after quantization?",
+    "ground_truth_answer": "No. QRazor achieves state-of-the-art performance without any requirement of fine-tuning or additional training.",
+    "ground_truth_chunks": [
+      "Without any additional requirement of fine-tuning or additional training, QRazor achieves performance similar or better compared to state-of-the-art"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "What is the training cost of the Higgs boson according to the QRazor paper?",
+    "ground_truth_answer": "This question cannot be answered from the paper. The QRazor paper contains no information about the Higgs boson — it focuses exclusively on 4-bit quantization of large language models.",
+    "ground_truth_chunks": [],
+    "source": "qrazor.pdf",
+    "question_type": "unanswerable"
+  },
+  {
+    "question": "What does the QRazor paper say about applying its method to vision transformers or image generation models?",
+    "ground_truth_answer": "The paper does not contain information about applying QRazor to vision transformers or image generation models. It focuses exclusively on large language models.",
+    "ground_truth_chunks": [],
+    "source": "qrazor.pdf",
+    "question_type": "unanswerable"
+  }
+]

@@ -22,6 +22,11 @@ async def query(request: QueryRequest) -> QueryResponse:
     # Trim to top_k
     chunks = chunks[: request.top_k]
 
+    # In api/routes/query.py, after the retrieve() call:
+    print(f"[DEBUG] chunks returned: {len(chunks)}")
+    if chunks:
+        print(f"[DEBUG] top chunk score: {chunks[0].score:.4f}, text preview: {chunks[0].text[:100]}")
+
     # Confidence gate: if best chunk score is too low, decline to answer
     if not chunks or (chunks[0].score is not None and chunks[0].score < _LOW_CONFIDENCE_THRESHOLD):
         return QueryResponse(

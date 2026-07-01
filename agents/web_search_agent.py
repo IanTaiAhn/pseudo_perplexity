@@ -2,6 +2,7 @@ import os
 import httpx
 from api.schemas import Chunk
 from ingestion.chunker import chunk_text
+from ingestion.embedder import embed_query, embed_texts
 
 
 _TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
@@ -23,8 +24,27 @@ def _tavily_results_to_chunks(results: list[dict]) -> list[Chunk]:
     return chunks
 
 
+def _score_chunks(query: str, chunks: list[Chunk]) -> list[Chunk]:
+    """Score web chunks by cosine similarity to the query, using the same
+    embedding model as document retrieval so scores are on a comparable scale."""
+    if not chunks:
+        return []
+
+    query_embedding = embed_query(query)
+    chunk_embeddings = embed_texts([c.text for c in chunks])
+
+    scored = []
+    for chunk, embedding in zip(chunks, chunk_embeddings):
+        # Both embeddings are normalized, so the dot product equals cosine similarity
+        # (the same score dense.py derives from ChromaDB's cosine distance).
+        score = sum(a * b for a, b in zip(query_embedding, embedding))
+        scored.append(chunk.model_copy(update={"score": score}))
+
+    return sorted(scored, key=lambda c: c.score, reverse=True)
+
+
 async def search(query: str, top_k: int = _DEFAULT_TOP_K) -> list[Chunk]:
-    """Search Tavily and return results as Chunks ready for reranking."""
+    """Search Tavily and return results as scored Chunks ready for reranking."""
     if not _TAVILY_API_KEY:
         return []
 
@@ -41,4 +61,6 @@ async def search(query: str, top_k: int = _DEFAULT_TOP_K) -> list[Chunk]:
 
     data = response.json()
     results = data.get("results", [])
-    return _tavily_results_to_chunks(results)
+    chunks = _tavily_results_to_chunks(results)
+    scored_chunks = _score_chunks(query, chunks)
+    return scored_chunks[:top_k]

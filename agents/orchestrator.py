@@ -6,7 +6,7 @@ from agents.web_search_agent import search
 
 async def retrieve(request: QueryRequest) -> list[Chunk]:
     """
-    Run document and web retrieval in parallel, merge results.
+    Run document and web retrieval in parallel, merge and rank results by score.
     Each path is optional based on request flags and data availability.
     """
     tasks = []
@@ -23,7 +23,9 @@ async def retrieve(request: QueryRequest) -> list[Chunk]:
 
     doc_results, web_results = await asyncio.gather(*tasks)
 
-    return doc_results + web_results
+    merged = doc_results + web_results
+    merged.sort(key=lambda c: c.score if c.score is not None else float("-inf"), reverse=True)
+    return merged
 
 
 async def _empty() -> list[Chunk]:

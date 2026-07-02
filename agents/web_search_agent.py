@@ -38,7 +38,7 @@ def _score_chunks(query: str, chunks: list[Chunk]) -> list[Chunk]:
         # Both embeddings are normalized, so the dot product equals cosine similarity
         # (the same score dense.py derives from ChromaDB's cosine distance).
         score = sum(a * b for a, b in zip(query_embedding, embedding))
-        scored.append(chunk.model_copy(update={"score": score}))
+        scored.append(chunk.model_copy(update={"score": score, "dense_score": score}))
 
     return sorted(scored, key=lambda c: c.score, reverse=True)
 

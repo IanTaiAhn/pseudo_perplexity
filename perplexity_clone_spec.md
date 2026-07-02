@@ -137,8 +137,9 @@ These are decided. Do not revisit them mid-project without updating this documen
 | Language | Python 3.11+ | Standard for ML engineering |
 | API framework | FastAPI | Async support, automatic OpenAPI docs, Pydantic native |
 | Data validation | Pydantic v2 | Type safety, output validation, schema enforcement |
-| LLM provider | Anthropic (Claude claude-sonnet-4-6) | Primary. OpenAI GPT-4o as fallback |
-| Embeddings | `sentence-transformers` (local) | Free, fast, good quality. `BAAI/bge-small-en-v1.5` as default model |
+| LLM provider | Anthropic (Claude claude-sonnet-4-6) | Only hosted provider — no OpenAI integration exists. For cost-free local dev, `generator.py` supports swapping in a local HuggingFace model (`LOCAL_LLM_MODEL` env var, e.g. `Qwen/Qwen2.5-1.5B-Instruct`) instead of an OpenAI fallback |
+| Embeddings | `sentence-transformers` (local) | Free, fast, good quality. `sentence-transformers/all-MiniLM-L6-v2` is the actual default (`EMBEDDING_MODEL` env var); `BAAI/bge-small-en-v1.5` remains a supported swap-in — `embedder.py` handles its required query-prefix — but is not the default |
+| Tokenization (chunking) | Anthropic's bundled tokenizer, via the `tokenizers` library loading `anthropic`'s `tokenizer.json` | Chunk boundaries are measured in the same tokens Claude actually sees, since chunks are synthesized with Claude; `tiktoken` (OpenAI's tokenizer) is listed in requirements.txt but is unused |
 | Vector DB | ChromaDB (dev) → Qdrant (prod) | ChromaDB for zero-config local dev; Qdrant for production persistence |
 | Sparse retrieval | `rank_bm25` | Lightweight, no server required |
 | Reranker | `cross-encoder/ms-marco-MiniLM-L-6-v2` (HuggingFace) | Free, runs locally, good quality |
@@ -704,8 +705,8 @@ Steps:
 - Set a `MAX_INPUT_TOKENS` env variable — reject queries whose estimated token count exceeds it
 
 ### Development cost reduction
-- Use `claude-haiku-4-5-20251001` during development for all testing except final eval runs
-- Switch to `claude-sonnet-4-6` only for eval runs and production
+- For zero-cost local iteration, set `LOCAL_LLM_MODEL` (e.g. `Qwen/Qwen2.5-1.5B-Instruct`) to route `generator.py` through a local HuggingFace model instead of the Claude API — no per-call cost, no network dependency
+- Unset `LOCAL_LLM_MODEL` to use `claude-sonnet-4-6` for eval runs and production
 - Cache embeddings — never re-embed a chunk that already has an embedding in the DB
 - Use local `sentence-transformers` for embeddings during development (free)
 
@@ -753,11 +754,17 @@ Update this every time you make a significant architectural or implementation de
 |---|---|---|---|
 | — | Raw Python for orchestration (no LangChain) | LangChain, LlamaIndex | Learning value, debuggability |
 | — | ChromaDB for dev, Qdrant for prod | Pinecone, FAISS, pgvector | Zero config locally, easy prod migration |
-| — | `BAAI/bge-small-en-v1.5` as default embedding model | OpenAI embeddings, `all-MiniLM-L6-v2` | Free, fast, strong performance on MTEB benchmark |
+| — | ~~`BAAI/bge-small-en-v1.5` as default embedding model~~ — superseded, see 2026-07-02 row below | OpenAI embeddings, `all-MiniLM-L6-v2` | Free, fast, strong performance on MTEB benchmark |
 | — | Tavily for web search | SerpAPI, Google Custom Search | Built specifically for RAG, returns clean structured content |
 | — | Langfuse for LLM observability | LangSmith, custom logging | Open source, self-hostable, free |
 | — | Fixed-size chunking as starting strategy | Semantic chunking, recursive | Simplest to implement and debug; measure before switching |
-| | | | |
+| — | `Chunk` gets separate `dense_score`/`bm25_score`/`hybrid_score`/`rerank_score` fields alongside `score` | Overwrite a single `score` field at each pipeline stage with no history kept | Overwriting loses the ability to tell whether a bad final ranking came from a dense miss, a BM25 miss, or the reranker overruling a good hybrid candidate — decomposed scores make retrieval failures debuggable |
+| — | Min-max normalization (per-query) + fixed 0.5/0.5 weight for hybrid fusion | Reciprocal Rank Fusion (RRF), learned fusion weights | Simplest to reason about while learning; weights are an explicit knob to tune against eval scores once layer 4 exists — RRF/learned fusion are documented as later options |
+| — | Candidates missing from one retriever's top-k are treated as normalized score 0.0 on that axis, not re-scored | Score every corpus chunk against both dense and BM25 to get exact values for every candidate | Cheaper and standard for candidate-generation fusion; acceptable since the goal at this stage is a good top-20 pool, not exact per-chunk scores |
+| 2026-07-02 | `sentence-transformers/all-MiniLM-L6-v2` as the actual default embedding model (`EMBEDDING_MODEL` env var) | `BAAI/bge-small-en-v1.5` (original default, see superseded row above) | Smaller/faster to download for local dev; `bge-small-en-v1.5` is still fully supported — `embedder.py` detects it and applies its required query-prefix — just not the default anymore |
+| 2026-07-02 | Anthropic's own tokenizer (`tokenizers` lib + `anthropic`'s bundled `tokenizer.json`) for chunk token-boundary counting | `tiktoken` (spec's original plan; still listed in requirements.txt) | Chunks are synthesized with Claude, so counting tokens the way Claude actually sees them is more accurate than counting them the way GPT models see them via `tiktoken`, which sits unused in requirements.txt |
+| 2026-07-02 | Optional local HuggingFace LLM via `LOCAL_LLM_MODEL` (e.g. `Qwen/Qwen2.5-1.5B-Instruct`) for zero-cost dev, instead of an OpenAI GPT-4o fallback | OpenAI GPT-4o as fallback (spec's original plan) | No OpenAI integration was ever built; a local HF model gives free, offline iteration during development, which serves the cost-reduction goal better than a second paid provider would |
+| 2026-07-02 | Debug-only routes `/debug/collection` and `/debug/query` added directly in `api/main.py` | A dedicated debug route module, or no debug routes | Fast way to inspect ChromaDB contents and raw retrieval scores against the confidence-threshold gate during development; intentionally not part of the documented `/query` and `/ingest` API surface |
 | | | | |
 
 ---

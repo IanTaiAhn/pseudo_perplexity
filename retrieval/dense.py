@@ -30,6 +30,7 @@ def retrieve(query: str, top_k: int = 10) -> list[Chunk]:
             source_type=meta["source_type"],
             chunk_index=meta["chunk_index"],
             score=score,
+            dense_score=score,
         ))
 
     return chunks

@@ -8,7 +8,14 @@ class Chunk(BaseModel):
     source: str
     source_type: str  # "document" or "web"
     chunk_index: int
-    score: Optional[float] = None
+    score: Optional[float] = None  # authoritative score at the current pipeline stage
+
+    # Per-stage scores, kept alongside `score` for debugging retrieval quality —
+    # e.g. distinguishing "BM25 missed this" from "reranker downgraded this".
+    dense_score: Optional[float] = None
+    bm25_score: Optional[float] = None
+    hybrid_score: Optional[float] = None
+    rerank_score: Optional[float] = None
 
 
 class QueryRequest(BaseModel):

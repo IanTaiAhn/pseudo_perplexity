@@ -757,7 +757,9 @@ Update this every time you make a significant architectural or implementation de
 | — | Tavily for web search | SerpAPI, Google Custom Search | Built specifically for RAG, returns clean structured content |
 | — | Langfuse for LLM observability | LangSmith, custom logging | Open source, self-hostable, free |
 | — | Fixed-size chunking as starting strategy | Semantic chunking, recursive | Simplest to implement and debug; measure before switching |
-| | | | |
+| — | `Chunk` gets separate `dense_score`/`bm25_score`/`hybrid_score`/`rerank_score` fields alongside `score` | Overwrite a single `score` field at each pipeline stage with no history kept | Overwriting loses the ability to tell whether a bad final ranking came from a dense miss, a BM25 miss, or the reranker overruling a good hybrid candidate — decomposed scores make retrieval failures debuggable |
+| — | Min-max normalization (per-query) + fixed 0.5/0.5 weight for hybrid fusion | Reciprocal Rank Fusion (RRF), learned fusion weights | Simplest to reason about while learning; weights are an explicit knob to tune against eval scores once layer 4 exists — RRF/learned fusion are documented as later options |
+| — | Candidates missing from one retriever's top-k are treated as normalized score 0.0 on that axis, not re-scored | Score every corpus chunk against both dense and BM25 to get exact values for every candidate | Cheaper and standard for candidate-generation fusion; acceptable since the goal at this stage is a good top-20 pool, not exact per-chunk scores |
 | | | | |
 
 ---

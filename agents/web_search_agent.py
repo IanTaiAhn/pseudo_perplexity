@@ -3,6 +3,7 @@ import httpx
 from api.schemas import Chunk
 from ingestion.chunker import chunk_text
 from ingestion.embedder import embed_query, embed_texts
+from ingestion.http_client import get_ssl_verify
 
 
 _TAVILY_API_KEY = os.getenv("TAVILY_API_KEY", "")
@@ -55,7 +56,7 @@ async def search(query: str, top_k: int = _DEFAULT_TOP_K) -> list[Chunk]:
         "include_raw_content": False,
     }
 
-    async with httpx.AsyncClient(timeout=10.0) as client:
+    async with httpx.AsyncClient(timeout=10.0, verify=get_ssl_verify()) as client:
         response = await client.post(_TAVILY_URL, json=payload)
         response.raise_for_status()
 

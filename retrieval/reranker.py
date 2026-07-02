@@ -29,5 +29,5 @@ def rerank(query: str, chunks: list[Chunk], top_k: int = 5) -> list[Chunk]:
         chunk.model_copy(update={"rerank_score": float(score), "score": float(score)})
         for chunk, score in zip(chunks, scores)
     ]
-    reranked.sort(key=lambda c: c.score, reverse=True)
+    reranked.sort(key=lambda c: c.score if c.score is not None else float("-inf"), reverse=True)
     return reranked[:top_k]

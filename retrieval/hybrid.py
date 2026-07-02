@@ -64,5 +64,5 @@ def retrieve(query: str, top_k: int = 10, candidate_k: int = _CANDIDATE_K) -> li
             "score": hybrid_score,
         }))
 
-    merged.sort(key=lambda c: c.score, reverse=True)
+    merged.sort(key=lambda c: c.score if c.score is not None else float("-inf"), reverse=True)
     return merged[:top_k]

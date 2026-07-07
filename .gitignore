@@ -7,6 +7,7 @@ __pycache__/
 .ruff_cache/
 chroma_db/
 mlruns/
+evaluation/results/
 *.egg-info/
 dist/
 build/

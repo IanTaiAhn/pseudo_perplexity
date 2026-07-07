@@ -24,4 +24,8 @@ jobs:
       - name: Run regression test
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-        run: uv run python evaluation/regression_test.py
+        # Module form (-m), not `python evaluation/regression_test.py`: the
+        # latter puts evaluation/ itself on sys.path instead of the repo
+        # root, so `from evaluation.ragas_runner import run` (and every
+        # `from agents...`/`from api...` absolute import inside it) fails.
+        run: uv run python -m evaluation.regression_test

@@ -1,1 +1,9 @@
 # Prometheus scrape configuration
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: "pseudo-perplexity"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["app:8000"]

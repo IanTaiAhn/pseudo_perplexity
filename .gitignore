@@ -8,6 +8,7 @@ __pycache__/
 chroma_db/
 mlruns/
 evaluation/results/
+monitoring/data/
 *.egg-info/
 dist/
 build/

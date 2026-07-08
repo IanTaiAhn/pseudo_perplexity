@@ -65,6 +65,17 @@ mlflow==2.19.0
 # Env
 python-dotenv==1.0.1
 
+# Layer 5 — Observability (structlog, Prometheus, Langfuse, drift detection)
+structlog==24.4.0
+prometheus-client==0.20.0
+# langfuse's Python SDK rewrote its client on top of OpenTelemetry between
+# v2 and v3/v4 (trace()/generation() replaced by start_as_current_observation()).
+# Pinned to 4.13.2, the API generator.py is written against — verified no
+# conflict with the anthropic==0.38.0/langchain pins above (pip check clean).
+langfuse==4.13.2
+# scipy is only used for drift_detector.py's ks_2samp — no other module needs it.
+scipy==1.14.1
+
 # Testing and dev tooling
 pytest==8.2.2
 pytest-asyncio==0.23.7

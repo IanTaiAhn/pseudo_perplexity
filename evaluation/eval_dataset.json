@@ -27,10 +27,10 @@
     "question_type": "factual"
   },
   {
-    "question": "What C4 perplexity does QRazor achieve on LLaMA2-7B under W4A4 quantization, and how does it compare to OmniQuant?",
-    "ground_truth_answer": "QRazor achieves a C4 perplexity of 15.76 on LLaMA2-7B under W4A4 quantization, which is 2.26 lower than OmniQuant's 18.02.",
+    "question": "What Wikitext2 perplexity does QRazor achieve on LLaMA2-7B under W4A4 quantization (group size 16), and how does it compare to OmniQuant?",
+    "ground_truth_answer": "QRazor achieves a Wikitext2 perplexity of 6.45 on LLaMA2-7B under W4A4 quantization with group size 16, substantially lower than OmniQuant's 14.61 under the same W4A4 setting.",
     "ground_truth_chunks": [
-      "QRazor attains a C4 perplexity of 15.76 (2.26 lower vs 18.02 in OmniQuant) on the LLaMA2-7B model of W4A4 quantization"
+      "QRazor (W4A4, group size 16) attains a Wikitext2 perplexity of 6.45 on the LLaMA2-7B model, compared to 14.61 for OmniQuant under W4A4"
     ],
     "source": "qrazor.pdf",
     "question_type": "factual"
@@ -99,6 +99,130 @@
   {
     "question": "What does the QRazor paper say about applying its method to vision transformers or image generation models?",
     "ground_truth_answer": "The paper does not contain information about applying QRazor to vision transformers or image generation models. It focuses exclusively on large language models.",
+    "ground_truth_chunks": [],
+    "source": "qrazor.pdf",
+    "question_type": "unanswerable"
+  },
+  {
+    "question": "What two precision scenarios does the QRazor paper evaluate, and how do they differ in KV cache precision?",
+    "ground_truth_answer": "QRazor evaluates W4A4 (4-bit weights, 4-bit activations, FP16 KV cache) and W4A4KV4 (4-bit weights, 4-bit activations, 4-bit KV cache). The two scenarios differ only in whether the KV cache is also compressed to 4-bit.",
+    "ground_truth_chunks": [
+      "This work considers the following two scenarios based on our QRazor scheme: W4A4 (4-bit weights, 4-bit activations, FP16 KV cache) and W4A4KV4 (4-bit weights, 4-bit activations, 4-bit KV cache)"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "How much does QRazor improve accuracy over QLLM on the LLaMA-1-7B and LLaMA-13B models?",
+    "ground_truth_answer": "QRazor achieves more than a 10% improvement in accuracy compared to QLLM on the LLaMA-1-7B and LLaMA-13B models.",
+    "ground_truth_chunks": [
+      "For the LLaMA-1-7B and LLaMA-13B models, QRazor demonstrates superior performance, achieving more than a 10% improvement in accuracy compared to QLLM"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "What hardware does QRazor's decompression-free arithmetic unit use to perform its multiply-and-accumulate operations?",
+    "ground_truth_answer": "QRazor's decompression-free arithmetic unit is implemented using a 4x4 multiplier together with a single 16-bit barrel shifter, allowing direct computation on compressed low-precision data without a separate decompression step.",
+    "ground_truth_chunks": [
+      "the dedicated processing unit is implemented using a 4x4 multiplier and a single 16-bit barrel shifter, enabling decompression-free arithmetic"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "What range of group sizes does QRazor's SDR compression stage support, and why can it use smaller group sizes than typical group-based quantization methods?",
+    "ground_truth_answer": "QRazor's compression group size ranges from 16 to 128. It can use smaller groups than typical group-based quantization because SDR compression doesn't require a per-group scaling computation -- it only removes leading zero bits and applies simple rounding, so smaller groups don't add the scale-factor overhead that other methods incur.",
+    "ground_truth_chunks": [
+      "the size of the compression group is determined within the range of 16 to 128; smaller group sizes are feasible because SDR does not involve computational quantization or a per-group scaling process, only bitwise removal of leading zeros and rounding"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "analytical"
+  },
+  {
+    "question": "What quantization granularity does QRazor use for weights versus activations and KV cache?",
+    "ground_truth_answer": "QRazor uses per-channel scaling for weights, and per-tensor scaling for activations and KV cache, with all parameters using static scaling.",
+    "ground_truth_chunks": [
+      "in the quantization stage, activations and KV caches use per-tensor scaling while weights use per-channel scaling, all with static scaling"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "According to the group-size ablation in Table 4, what is QRazor's average zero-shot accuracy on LLaMA-2-7B in the W4A4KV4 configuration at group size 16 versus group size 128?",
+    "ground_truth_answer": "At group size 16, LLaMA-2-7B's average zero-shot accuracy under W4A4KV4 is 63.65%. At group size 128, it drops to 47.36%, compared to an FP16 baseline of 69.00%.",
+    "ground_truth_chunks": [
+      "Table 4: LLaMA-2-7B average accuracy under W4A4KV4 -- baseline 69.00, group size 8: 64.58, group size 16: 63.65, group size 32: 61.17, group size 64: 56.91, group size 128: 47.36"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "numerical"
+  },
+  {
+    "question": "What headline hardware efficiency numbers does the QRazor abstract report for its decompression-free arithmetic unit?",
+    "ground_truth_answer": "The abstract reports that QRazor's decompression-free arithmetic unit achieves 57.8% power savings and 61.2% area savings compared to performing arithmetic operations after decompression.",
+    "ground_truth_chunks": [
+      "Hardware simulations show that our design, implemented for scenarios such as W4A4 or W4A4KV4, achieves 57.8% power and 61.2% area savings compared to arithmetic operations performed after decompression"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "In the detailed hardware evaluation, how does QRazor's proposed MAC unit's area and power savings compare against a 16x8 INT MAC unit versus an 8x8 INT MAC unit?",
+    "ground_truth_answer": "Against the 16x8 INT MAC unit, QRazor's proposed MAC unit achieves a 61.2% area reduction and a 56% power reduction. Against the 8x8 INT MAC unit, it achieves a smaller 34% area reduction and 33.7% power reduction, since the 8x8 unit is already a lower-precision baseline.",
+    "ground_truth_chunks": [
+      "the proposed design achieves a 61.2% area reduction versus the 16x8 INT MAC unit and a 34% area reduction versus the 8x8 INT MAC unit; power consumption is reduced by 56% versus the 16x8 unit and 33.7% versus the 8x8 unit"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "comparative"
+  },
+  {
+    "question": "What models and evaluation harness does the QRazor paper use in its experiments, and what sequence length and batch size are used?",
+    "ground_truth_answer": "QRazor is evaluated on LLaMA2, LLaMA3, and Mistral-7B models using lm-evaluation-harness for zero-shot accuracy, with a sequence length of 2048 and a batch size of 1 for all tasks.",
+    "ground_truth_chunks": [
+      "We evaluate our proposed QRazor method on the LLaMA2 and LLaMA3 models... accuracy on PIQA, ARC, Hellaswag, and Winogrande using lm-evaluation-harness. A sequence length of 2048 and a batch size of 1 were used for all tasks during evaluation"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "factual"
+  },
+  {
+    "question": "For an example attention configuration with M=128, N=64, H=8, G=32, what does the QRazor paper's FLOPs/IOPs comparison (Table 8) show for Hadamard rotation versus QRazor's SDR compression?",
+    "ground_truth_answer": "A single Hadamard rotation costs 8,192 FLOPs, and applying it across all Hadamard heads costs 65,536 FLOPs. QRazor's SDR compression costs only 512 IOPs, and its barrel-shifter operation costs 256 IOPs -- both orders of magnitude cheaper than the Hadamard-based approach.",
+    "ground_truth_chunks": [
+      "Table 8, Result(M=128, N=64, H=8, G=32): Single Hadamard 8,192 FLOPs, Hadamard Heads 65,536 FLOPs, SDR Compression 512 IOPs, Barrel Shifter 256 IOPs"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "numerical"
+  },
+  {
+    "question": "What Lambada-OpenAI perplexity does QRazor achieve on LLaMA-2-7B under W4A4 at group size 16, according to the appendix perplexity results?",
+    "ground_truth_answer": "QRazor achieves a Lambada-OpenAI perplexity of 4.47 on LLaMA-2-7B under W4A4 at group size 16.",
+    "ground_truth_chunks": [
+      "Table 7, LLaMA-2-7B W4A4 Lambada-OpenAI perplexity by group size: 8: 4.24, 16: 4.47, 32: 5.04, 64: 5.83, 128: 7.94"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "numerical"
+  },
+  {
+    "question": "According to the appendix ablation comparing W4A8, W8A8, and W4A16, which configuration achieved the highest accuracy?",
+    "ground_truth_answer": "W8A8 demonstrated the highest accuracy among the three configurations, suggesting that compressing weight values to fewer bits is roughly as sensitive to accuracy as compressing activation outliers.",
+    "ground_truth_chunks": [
+      "As shown in Table 6, W8A8 demonstrates the highest accuracy among the three cases. The results suggest that compressing weight values into fewer bits is as sensitive as capturing activation outliers"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "comparative"
+  },
+  {
+    "question": "How does QRazor's Query-projection quantization differ from QuaRot and SpinQuant?",
+    "ground_truth_answer": "Unlike QuaRot and SpinQuant, QRazor uniquely quantizes the Query projection, which enables a decompression-free INT4 matrix multiplication for the Q*K^T operation inside the multi-head attention layer.",
+    "ground_truth_chunks": [
+      "In comparison to methods like QuaRot and SpinQuant, our approach uniquely quantizes the Query, enabling a decompression-free INT4 matrix multiplication for the Q*K^T operation within the Multi-Head Attention layer"
+    ],
+    "source": "qrazor.pdf",
+    "question_type": "comparative"
+  },
+  {
+    "question": "What does the QRazor paper report about the carbon footprint or training energy consumption of its method?",
+    "ground_truth_answer": "The paper does not report anything about carbon footprint or training energy consumption. It only reports hardware area and power savings for its proposed inference-time arithmetic unit, not training-related energy metrics -- and QRazor requires no training or fine-tuning at all, since it is a post-training quantization method.",
     "ground_truth_chunks": [],
     "source": "qrazor.pdf",
     "question_type": "unanswerable"

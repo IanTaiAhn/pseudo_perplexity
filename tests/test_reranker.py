@@ -1,4 +1,5 @@
 import pytest
+import torch
 from unittest.mock import MagicMock, patch
 from api.schemas import Chunk
 from retrieval.reranker import rerank
@@ -22,10 +23,11 @@ def test_rerank_scores_query_chunk_pairs_and_sorts_descending():
         results = rerank("query", chunks, top_k=5)
 
     # Cross-encoder scores (query, chunk) jointly, unlike dense/BM25 which
-    # score each independently — verify it's fed pairs, not separate texts.
-    mock_model.predict.assert_called_once_with(
-        [["query", "irrelevant text"], ["query", "highly relevant text"]]
-    )
+    # score each independently — verify it's fed pairs, not separate texts,
+    # and that raw logits are squashed to 0-1 via a sigmoid activation.
+    args, kwargs = mock_model.predict.call_args
+    assert args == ([["query", "irrelevant text"], ["query", "highly relevant text"]],)
+    assert isinstance(kwargs["activation_fn"], torch.nn.Sigmoid)
     assert [c.chunk_id for c in results] == ["b", "a"]
     assert results[0].rerank_score == pytest.approx(0.9)
     assert results[0].score == pytest.approx(0.9)

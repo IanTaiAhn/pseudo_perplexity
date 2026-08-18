@@ -125,15 +125,16 @@ sources' realistic chances (e.g. a nonsense query). Confirm you get the fixed
 `estimated_cost_usd: 0.0` (no LLM call should happen — check logs for absence
 of an `llm_call` event).
 
-**Worth specifically checking:** the confidence gate in `api/routes/query.py`
-compares the top chunk's `score` against a fixed `0.3` threshold — but after
-Layer 3, `score` is set from the cross-encoder reranker (`retrieval/reranker.py`),
-whose raw output is an *unbounded* logit (often ranges roughly -10 to +10, not
-0-1). Compare a few `/debug/query` cosine scores (bounded 0-1) against the
-`score` your `/query` responses actually show for the same question — if
-reranked scores rarely cross 0.3 for good matches (or routinely cross it for
-bad ones), the gate isn't calibrated to the post-rerank scale and you may want
-to flag/adjust the threshold.
+**Previously miscalibrated, now fixed:** the confidence gate in
+`api/routes/query.py` compares the top chunk's `score` against a fixed `0.3`
+threshold. `score` is set from the cross-encoder reranker
+(`retrieval/reranker.py`), whose raw `predict()` output is an *unbounded*
+logit (roughly -10 to +10, not 0-1) — so `0.3` was comparing a bounded
+threshold against an unbounded scale. `reranker.py` now passes
+`activation_fn=torch.nn.Sigmoid()` to `predict()`, squashing scores into
+(0, 1) before the gate sees them. Worth re-verifying here: run a few queries
+and confirm reranked `score` values sit in (0, 1), and that clearly-relevant
+top chunks land comfortably above 0.3 while off-topic queries land below it.
 
 ## 10. Guardrails (currently stubs — don't expect behavior)
 

@@ -23,7 +23,12 @@ def rerank(query: str, chunks: list[Chunk], top_k: int = 5) -> list[Chunk]:
     # Cross-encoder: query and chunk text go in together as one input pair
     # per candidate, unlike dense/BM25 which score query and chunk independently.
     pairs = [[query, chunk.text] for chunk in chunks]
-    scores = model.predict(pairs)
+    # ms-marco-MiniLM-L-6-v2's raw predict() output is an unbounded logit
+    # (roughly -10 to +10), not a 0-1 score — squash it with sigmoid so the
+    # confidence gate in api/routes/query.py (score < 0.3) compares against
+    # a bounded, interpretable scale instead of an arbitrary logit range.
+    import torch
+    scores = model.predict(pairs, activation_fn=torch.nn.Sigmoid())
 
     reranked = [
         chunk.model_copy(update={"rerank_score": float(score), "score": float(score)})
